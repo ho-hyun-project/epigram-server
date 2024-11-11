@@ -13,40 +13,49 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-public class Epigram extends BaseEntity{
+@Getter
+public class Epigram extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "reference_url")
-  private String referenceUrl;
+    @Column(name = "reference_url")
+    @Setter
+    private String referenceUrl;
 
-  @Column(name = "reference_title")
-  private String referenceTitle;
+    @Column(name = "reference_title")
+    @Setter
+    private String referenceTitle;
 
-  private String author;
+    @Setter
+    private String author;
 
-  private String content;
+    @Setter
+    private String content;
 
-  @Column(name = "comment_count")
-  private int commentCount;
+    @Column(name = "comment_count")
+    private Long commentCount;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @OneToMany(mappedBy = "epigram", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EpigramLike> epigramLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "epigram", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
+    private List<EpigramLike> epigramLikes = new ArrayList<>();
 
-  @ManyToMany
-  @JoinTable(
-      name = "epigram_tag",
-      joinColumns = @JoinColumn(name = "epigram_id"),
-      inverseJoinColumns = @JoinColumn(name = "tag_id")
-  )
-  private List<Tag> tags = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "epigram_tag",
+            joinColumns = @JoinColumn(name = "epigram_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @Setter
+    private List<Tag> tags = new ArrayList<>();
 
 }

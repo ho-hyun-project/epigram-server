@@ -7,17 +7,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-public class Tag extends BaseEntity{
+@Getter
+@NoArgsConstructor
+public class Tag extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    @Setter
+    private String name;
 
-  @ManyToMany(mappedBy = "tags")
-  private List<Epigram> epigrams = new ArrayList<>();
+    @ManyToMany(mappedBy = "tags")
+    private List<Epigram> epigrams = new ArrayList<>();
 
 }
