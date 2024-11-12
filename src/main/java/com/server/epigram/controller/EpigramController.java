@@ -20,11 +20,10 @@ public class EpigramController {
 
     private final EpigramService epigramService;
 
+    @Autowired
     public EpigramController(EpigramService epigramService) {
         this.epigramService = epigramService;
     }
-
-    @Autowired
 
     @PostMapping
     public ResponseEntity<EpigramResponseDto> createEpigram(@RequestBody EpigramRequestDto epigramRequestDto) {
