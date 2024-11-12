@@ -7,25 +7,27 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 
 @Entity
-public class Comment extends BaseEntity{
+@Getter
+public class Comment extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String content;
+    private String content;
 
-  @Column(name = "is_private")
-  private boolean isPrivate;
+    @Column(name = "is_private")
+    private boolean isPrivate;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "epigram_id")
-  private Epigram epigram;
+    @ManyToOne
+    @JoinColumn(name = "epigram_id")
+    private Epigram epigram;
 
 }

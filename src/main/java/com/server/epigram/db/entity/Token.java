@@ -9,30 +9,32 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Entity
-public class Token extends BaseEntity{
+@Getter
+public class Token extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "access_token", nullable = false)
-  private String accessToken;
+    @Column(name = "access_token", nullable = false)
+    private String accessToken;
 
-  @Column(name = "refresh_token", nullable = false)
-  private String refreshToken;
+    @Column(name = "refresh_token", nullable = false)
+    private String refreshToken;
 
-  @Column(name = "token_type", nullable = false)
-  private TokenType tokenType;
+    @Column(name = "token_type", nullable = false)
+    private TokenType tokenType;
 
-  @Column(name = "expires_at")
-  private LocalDateTime expiresAt;
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 
-  private boolean revoked;  // 토근 만료 여부
+    private boolean revoked;  // 토근 만료 여부
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }
