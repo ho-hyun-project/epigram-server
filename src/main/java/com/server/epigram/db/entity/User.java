@@ -2,7 +2,7 @@ package com.server.epigram.db.entity;
 
 import static jakarta.persistence.CascadeType.ALL;
 
-import com.server.epigram.global.common.OauthType;
+import com.server.epigram.common.OauthType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

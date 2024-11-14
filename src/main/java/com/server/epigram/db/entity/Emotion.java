@@ -1,6 +1,6 @@
 package com.server.epigram.db.entity;
 
-import com.server.epigram.global.common.EmotionType;
+import com.server.epigram.common.EmotionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
