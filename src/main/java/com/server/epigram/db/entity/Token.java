@@ -1,6 +1,6 @@
 package com.server.epigram.db.entity;
 
-import com.server.epigram.global.common.TokenType;
+import com.server.epigram.common.TokenType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
