@@ -28,51 +28,53 @@ public class EpigramController {
 
     @PostMapping
     public ResponseEntity<EpigramResponseDto> postEpigram(@RequestBody EpigramRequestDto epigramRequestDto) {
-
         EpigramResponseDto epigramResponseDto = epigramService.createEpigram(epigramRequestDto);
         return ResponseEntity.ok(epigramResponseDto);
-
     }
 
     @GetMapping
     public ResponseEntity<List<EpigramResponseDto>> getAllEpigram() {
-
-        List<EpigramResponseDto> epigramResponseDtos = epigramService.readAllEpigram();
+        List<EpigramResponseDto> epigramResponseDtos = epigramService.getAllEpigram();
         return ResponseEntity.ok(epigramResponseDtos);
     }
 
     @GetMapping("/today")
-    public String getTodayEpigram() {
-        return "";
+    public ResponseEntity<EpigramResponseDto> getTodayEpigram() {
+        EpigramResponseDto epigramResponseDto = epigramService.getTodayEpigram();
+        return ResponseEntity.ok(epigramResponseDto);
     }
 
     @GetMapping("/{id}")
-    public String getEpigram(@PathVariable String id) {
-        return "";
+    public ResponseEntity<EpigramResponseDto> getEpigram(@PathVariable Long id) {
+        EpigramResponseDto epigramResponseDto = epigramService.getEpigram(id);
+        return ResponseEntity.ok(epigramResponseDto);
     }
 
     @PatchMapping("/{id}")
-    public String modifyEpigram(@PathVariable String id) {
+    public ResponseEntity<EpigramResponseDto> modifyEpigram(@PathVariable Long id,
+                                                            @RequestBody EpigramRequestDto epigramRequestDto) {
+        EpigramResponseDto epigramResponseDto = epigramService.updateEpigram(id, epigramRequestDto);
+        return ResponseEntity.ok(epigramResponseDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEpigram(@PathVariable Long id) {
+        epigramService.deleteEpigram(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/like")
+    public String addEpigramLike(@PathVariable("id") Long id) {
         return "";
     }
 
-    @DeleteMapping("/epigrams/{id}")
-    public String deleteEpigram(@PathVariable String id) {
+    @DeleteMapping("/{id}/like")
+    public String deleteEpigramLike(@PathVariable("id") String id) {
         return "";
     }
 
-    @PostMapping("/epigrams/{id}/like")
-    public String addEpigramLike(@PathVariable String id) {
-        return "";
-    }
-
-    @DeleteMapping("/epigrams/{id}/like")
-    public String deleteEpigramLike(@PathVariable String id) {
-        return "";
-    }
-
-    @GetMapping("/epigrams/{id}/comments")
-    public String getEpigramAllComments(@PathVariable String id) {
+    @GetMapping("/{id}/comments")
+    public String getEpigramAllComments(@PathVariable("id") String id) {
         return "";
     }
 

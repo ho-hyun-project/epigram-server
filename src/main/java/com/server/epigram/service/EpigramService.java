@@ -8,10 +8,11 @@ import com.server.epigram.dto.mapper.EpigramMapper;
 import com.server.epigram.dto.mapper.TagMapper;
 import com.server.epigram.dto.request.EpigramRequestDto;
 import com.server.epigram.dto.response.EpigramResponseDto;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EpigramService {
@@ -51,9 +52,51 @@ public class EpigramService {
         return epigramMapper.toResponseDto(savedEpigram);
     }
 
-    @Transactional
-    public List<EpigramResponseDto> readAllEpigram() {
+    @Transactional(readOnly = true)
+    public List<EpigramResponseDto> getAllEpigram() {
         List<Epigram> epigrams = epigramRepository.findAll();
+
+        if (epigrams.isEmpty()) {
+            throw new EntityNotFoundException("등록된 글귀가 없습니다. 새로운 글귀를 추가해주세요.");
+        }
+
         return epigramMapper.toDtoList(epigrams);
     }
+
+    @Transactional(readOnly = true)
+    public EpigramResponseDto getTodayEpigram() {
+        Epigram randomEpigram = epigramRepository.findRandomEpigram()
+                .orElseThrow(() -> new EntityNotFoundException("저장된 에피그램이 없습니다. 에피그램을 추가해주세요."));
+
+        return epigramMapper.toResponseDto(randomEpigram);
+    }
+
+    @Transactional(readOnly = true)
+    public EpigramResponseDto getEpigram(Long id) {
+        Epigram epigram = epigramRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 데이터는 존재하지 않습니다."));
+
+        return epigramMapper.toResponseDto(epigram);
+    }
+
+    @Transactional
+    public EpigramResponseDto updateEpigram(Long id, EpigramRequestDto epigramRequestDto) {
+        Epigram epigram = epigramRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("요청한 ID와 일치하는 데이터가 없습니다."));
+
+        epigram.setReferenceUrl(epigramRequestDto.getReferenceUrl());
+        epigram.setReferenceTitle(epigramRequestDto.getReferenceTitle());
+        epigram.setAuthor(epigramRequestDto.getAuthor());
+        epigram.setContent(epigramRequestDto.getContent());
+
+        Epigram savedEpigram = epigramRepository.save(epigram);
+
+        return epigramMapper.toResponseDto(savedEpigram);
+    }
+
+    @Transactional
+    public void deleteEpigram(Long id) {
+        epigramRepository.deleteById(id);
+    }
+
 }
