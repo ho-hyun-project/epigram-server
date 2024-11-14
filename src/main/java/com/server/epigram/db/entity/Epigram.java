@@ -49,7 +49,7 @@ public class Epigram extends BaseEntity {
     @Setter
     private List<EpigramLike> epigramLikes = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "epigram_tag",
             joinColumns = @JoinColumn(name = "epigram_id"),

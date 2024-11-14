@@ -4,9 +4,11 @@ import com.server.epigram.db.entity.Epigram;
 import com.server.epigram.db.entity.Tag;
 import com.server.epigram.db.repository.EpigramRepository;
 import com.server.epigram.db.repository.TagRepository;
-import com.server.epigram.dto.TagDto;
+import com.server.epigram.dto.mapper.EpigramMapper;
+import com.server.epigram.dto.mapper.TagMapper;
 import com.server.epigram.dto.request.EpigramRequestDto;
 import com.server.epigram.dto.response.EpigramResponseDto;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,43 +18,42 @@ public class EpigramService {
 
     private final EpigramRepository epigramRepository;
     private final TagRepository tagRepository;
+    private final EpigramMapper epigramMapper;
+    private final TagMapper tagMapper;
 
     @Autowired
-    public EpigramService(EpigramRepository epigramRepository, TagRepository tagRepository) {
+    public EpigramService(EpigramRepository epigramRepository,
+                          TagRepository tagRepository,
+                          EpigramMapper epigramMapper,
+                          TagMapper tagMapper) {
         this.epigramRepository = epigramRepository;
         this.tagRepository = tagRepository;
+        this.epigramMapper = epigramMapper;
+        this.tagMapper = tagMapper;
     }
 
+    @Transactional
     public EpigramResponseDto createEpigram(EpigramRequestDto epigramRequestDto) {
-        //TODO : 로그인한 유저 id 조회 후 응답값에 포함
-        Epigram epigram = new Epigram();
-        epigram.setAuthor(epigramRequestDto.getAuthor());
-        epigram.setContent(epigramRequestDto.getContent());
-        epigram.setReferenceTitle(epigramRequestDto.getReferenceTitle());
-        epigram.setReferenceUrl(epigramRequestDto.getReferenceUrl());
+        Epigram epigram = epigramMapper.toEntity(epigramRequestDto);
 
         List<Tag> tags = epigramRequestDto.getTags().stream()
-                .map(TagDto::toEntity)
-                .map(tagRepository::save)
-                .toList();
+                .map(tagDto -> {
+                    Tag tag = tagRepository.findByName(tagDto.getName())
+                            .orElse(tagMapper.toEntity(tagDto));
+
+                    return tagRepository.save(tag);
+                }).toList();
 
         epigram.setTags(tags);
 
-        epigramRepository.save(epigram);
+        Epigram savedEpigram = epigramRepository.save(epigram);
 
-        List<TagDto> tagDtos = tags.stream()
-                .map(TagDto::fromEntity)
-                .toList();
+        return epigramMapper.toResponseDto(savedEpigram);
+    }
 
-        return EpigramResponseDto.builder()
-                .id(epigram.getId())
-                .referenceTitle(epigram.getReferenceTitle())
-                .referenceUrl(epigram.getReferenceUrl())
-                .author(epigram.getAuthor())
-                .content(epigram.getContent())
-                .writerId(1L)
-                .tags(tagDtos)
-                .likeCount(0L)
-                .build();
+    @Transactional
+    public List<EpigramResponseDto> readAllEpigram() {
+        List<Epigram> epigrams = epigramRepository.findAll();
+        return epigramMapper.toDtoList(epigrams);
     }
 }
