@@ -2,7 +2,15 @@ package com.server.epigram.controller;
 
 import com.server.epigram.dto.request.EpigramRequestDto;
 import com.server.epigram.dto.response.EpigramResponseDto;
+import com.server.epigram.exception.ErrorResponse;
+import com.server.epigram.exception.InvalidDataException;
 import com.server.epigram.service.EpigramService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Epigram")
 @RestController
 @RequestMapping("/api/epigrams")
 public class EpigramController {
@@ -26,8 +35,28 @@ public class EpigramController {
         this.epigramService = epigramService;
     }
 
+    @Operation(
+            summary = "에피그램 등록",
+            description = "새로운 에피그램을 생성합니다."
+    )
+    @ApiResponse(responseCode = "200", description = "성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = EpigramResponseDto.class)
+            ))
+    @ApiResponse(responseCode = "400", description = "잘못된 데이터 형식",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+            ))
     @PostMapping
-    public ResponseEntity<EpigramResponseDto> postEpigram(@RequestBody EpigramRequestDto epigramRequestDto) {
+    public ResponseEntity<EpigramResponseDto> postEpigram(
+            @Parameter(description = "생성할 에피그램 데이터") @RequestBody EpigramRequestDto epigramRequestDto) {
+
+        if (epigramRequestDto == null || epigramRequestDto.getContent().isEmpty()) {
+            throw new InvalidDataException("잘못된 형식입니다.");
+        }
+
         EpigramResponseDto epigramResponseDto = epigramService.createEpigram(epigramRequestDto);
         return ResponseEntity.ok(epigramResponseDto);
     }
