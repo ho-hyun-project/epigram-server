@@ -3,6 +3,7 @@ package com.server.epigram.controller;
 import com.server.epigram.dto.request.EpigramRequestDto;
 import com.server.epigram.dto.response.EpigramResponseDto;
 import com.server.epigram.service.EpigramService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +27,7 @@ public class EpigramController {
     }
 
     @PostMapping
-    public ResponseEntity<EpigramResponseDto> createEpigram(@RequestBody EpigramRequestDto epigramRequestDto) {
+    public ResponseEntity<EpigramResponseDto> postEpigram(@RequestBody EpigramRequestDto epigramRequestDto) {
 
         EpigramResponseDto epigramResponseDto = epigramService.createEpigram(epigramRequestDto);
         return ResponseEntity.ok(epigramResponseDto);
@@ -34,8 +35,10 @@ public class EpigramController {
     }
 
     @GetMapping
-    public String getAllEpigram() {
-        return "";
+    public ResponseEntity<List<EpigramResponseDto>> getAllEpigram() {
+
+        List<EpigramResponseDto> epigramResponseDtos = epigramService.readAllEpigram();
+        return ResponseEntity.ok(epigramResponseDtos);
     }
 
     @GetMapping("/today")
