@@ -1,9 +1,12 @@
-package com.server.epigram.dto.response;
+package com.server.epigram.dto.response.epigram;
 
 import com.server.epigram.dto.TagDto;
-import lombok.*;
-
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

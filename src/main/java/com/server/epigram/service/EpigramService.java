@@ -1,15 +1,21 @@
 package com.server.epigram.service;
 
 import com.server.epigram.db.entity.Epigram;
+import com.server.epigram.db.entity.EpigramLike;
 import com.server.epigram.db.entity.Tag;
+import com.server.epigram.db.entity.User;
+import com.server.epigram.db.repository.EpigramLikeRepository;
 import com.server.epigram.db.repository.EpigramRepository;
 import com.server.epigram.db.repository.TagRepository;
+import com.server.epigram.db.repository.UserRepository;
 import com.server.epigram.dto.mapper.EpigramMapper;
 import com.server.epigram.dto.mapper.TagMapper;
 import com.server.epigram.dto.request.EpigramRequestDto;
-import com.server.epigram.dto.response.EpigramResponseDto;
+import com.server.epigram.dto.response.epigram.EpigramResponseDto;
+import com.server.epigram.dto.response.epigram.LikeEpigramResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +27,19 @@ public class EpigramService {
     private final TagRepository tagRepository;
     private final EpigramMapper epigramMapper;
     private final TagMapper tagMapper;
+    private final EpigramLikeRepository epigramLikeRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public EpigramService(EpigramRepository epigramRepository,
-                          TagRepository tagRepository,
-                          EpigramMapper epigramMapper,
-                          TagMapper tagMapper) {
+    public EpigramService(EpigramRepository epigramRepository, TagRepository tagRepository, EpigramMapper epigramMapper,
+                          TagMapper tagMapper, EpigramLikeRepository epigramLikeRepository,
+                          UserRepository userRepository) {
         this.epigramRepository = epigramRepository;
         this.tagRepository = tagRepository;
         this.epigramMapper = epigramMapper;
         this.tagMapper = tagMapper;
+        this.epigramLikeRepository = epigramLikeRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -99,4 +108,47 @@ public class EpigramService {
         epigramRepository.deleteById(id);
     }
 
+    @Transactional
+    public LikeEpigramResponseDto addLikeEpigram(Long userId, Long epigramId) {
+        EpigramResponseDto epigram = getEpigram(epigramId);
+        boolean isLiked = epigramLikeRepository.existsByUserIdAndEpigramId(userId, epigramId);
+
+        if (isLiked) {
+            LikeEpigramResponseDto likeEpigramResponseDto = new LikeEpigramResponseDto();
+            BeanUtils.copyProperties(epigram, likeEpigramResponseDto);
+            likeEpigramResponseDto.setLiked(true);
+            return likeEpigramResponseDto;
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+        Epigram epigramEntity = epigramRepository.findById(epigramId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 에피그램을 찾을 수 없습니다."));
+
+        EpigramLike epigramLike = new EpigramLike();
+        epigramLike.setUser(user);
+        epigramLike.setEpigram(epigramEntity);
+
+        epigramLikeRepository.save(epigramLike);
+
+        LikeEpigramResponseDto likeEpigramResponseDto = new LikeEpigramResponseDto();
+        BeanUtils.copyProperties(epigram, likeEpigramResponseDto);
+        likeEpigramResponseDto.setLiked(true);
+
+        return likeEpigramResponseDto;
+    }
+
+    @Transactional
+    public LikeEpigramResponseDto deleteLikeEpigram(Long userId, Long epigramId) {
+        EpigramResponseDto epigram = getEpigram(epigramId);
+        EpigramLike epigramLike = epigramLikeRepository.findByUserIdAndEpigramId(userId, epigramId)
+                .orElseThrow(() -> new RuntimeException("Like not found"));
+
+        epigramLikeRepository.delete(epigramLike);
+
+        LikeEpigramResponseDto likeEpigramResponseDto = new LikeEpigramResponseDto();
+        BeanUtils.copyProperties(epigram, likeEpigramResponseDto);
+        likeEpigramResponseDto.setLiked(false);
+
+        return likeEpigramResponseDto;
+    }
 }
