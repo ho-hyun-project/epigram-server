@@ -15,7 +15,7 @@ import com.server.epigram.db.repository.EpigramRepository;
 import com.server.epigram.db.repository.TagRepository;
 import com.server.epigram.dto.TagDto;
 import com.server.epigram.dto.request.EpigramRequestDto;
-import com.server.epigram.dto.response.EpigramResponseDto;
+import com.server.epigram.dto.response.epigram.EpigramResponseDto;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

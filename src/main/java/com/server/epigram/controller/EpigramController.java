@@ -1,7 +1,9 @@
 package com.server.epigram.controller;
 
+import com.server.epigram.auth.UserDetailsImpl;
 import com.server.epigram.dto.request.EpigramRequestDto;
-import com.server.epigram.dto.response.EpigramResponseDto;
+import com.server.epigram.dto.response.epigram.EpigramResponseDto;
+import com.server.epigram.dto.response.epigram.LikeEpigramResponseDto;
 import com.server.epigram.exception.ErrorResponse;
 import com.server.epigram.exception.InvalidDataException;
 import com.server.epigram.service.EpigramService;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -93,17 +96,25 @@ public class EpigramController {
     }
 
     @PostMapping("/{id}/like")
-    public String addEpigramLike(@PathVariable("id") Long id) {
-        return "";
+    public ResponseEntity<LikeEpigramResponseDto> addEpigramLike(@PathVariable("id") Long epigramId,
+                                                                 @AuthenticationPrincipal
+                                                                 UserDetailsImpl userDetails) {
+        Long userId = userDetails.getId();
+        LikeEpigramResponseDto likeEpigramResponseDto = epigramService.addLikeEpigram(userId, epigramId);
+        return ResponseEntity.ok(likeEpigramResponseDto);
     }
 
     @DeleteMapping("/{id}/like")
-    public String deleteEpigramLike(@PathVariable("id") String id) {
-        return "";
+    public ResponseEntity<LikeEpigramResponseDto> deleteEpigramLike(@PathVariable("id") Long epigramId,
+                                                                    @AuthenticationPrincipal
+                                                                    UserDetailsImpl userDetails) {
+        Long userId = userDetails.getId();
+        LikeEpigramResponseDto likeEpigramResponseDto = epigramService.deleteLikeEpigram(userId, epigramId);
+        return ResponseEntity.ok(likeEpigramResponseDto);
     }
 
     @GetMapping("/{id}/comments")
-    public String getEpigramAllComments(@PathVariable("id") String id) {
+    public String getEpigramAllComments(@PathVariable String id) {
         return "";
     }
 
