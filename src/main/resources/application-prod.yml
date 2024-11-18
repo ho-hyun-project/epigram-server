@@ -1,6 +1,7 @@
 spring:
   application:
     name: epigram
+
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     open-in-view: false
@@ -10,8 +11,12 @@ spring:
     properties:
       hibernate:
         format_sql: false
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+
+  jwt:
+    secret: ${JWT_SIGNATURE}

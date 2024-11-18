@@ -14,7 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class EpigramResponseDto {
-
     private Long id;
     private String referenceUrl;
     private String referenceTitle;
@@ -23,5 +22,5 @@ public class EpigramResponseDto {
     private Long writerId;
     private List<TagDto> tags;
     private Long likeCount;
-
 }
+

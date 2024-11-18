@@ -15,32 +15,23 @@ import com.server.epigram.dto.response.epigram.EpigramResponseDto;
 import com.server.epigram.dto.response.epigram.LikeEpigramResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class EpigramService {
 
     private final EpigramRepository epigramRepository;
     private final TagRepository tagRepository;
-    private final EpigramMapper epigramMapper;
-    private final TagMapper tagMapper;
     private final EpigramLikeRepository epigramLikeRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public EpigramService(EpigramRepository epigramRepository, TagRepository tagRepository, EpigramMapper epigramMapper,
-                          TagMapper tagMapper, EpigramLikeRepository epigramLikeRepository,
-                          UserRepository userRepository) {
-        this.epigramRepository = epigramRepository;
-        this.tagRepository = tagRepository;
-        this.epigramMapper = epigramMapper;
-        this.tagMapper = tagMapper;
-        this.epigramLikeRepository = epigramLikeRepository;
-        this.userRepository = userRepository;
-    }
+    private final EpigramMapper epigramMapper;
+    private final TagMapper tagMapper;
 
     @Transactional
     public EpigramResponseDto createEpigram(EpigramRequestDto epigramRequestDto) {
