@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -28,21 +29,27 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false)
     private String email;
 
+    @Setter
     @Column(nullable = false)
     private String password;
 
+    @Setter
     @Column(name = "oauth_id")
     private String oauthId;
 
+    @Setter
     @Column(name = "oauth_provider")
     private OauthType oauthProvider;
 
+    @Setter
     @Column(nullable = false)
     private String nickName;
 
+    @Setter
     private String image;
 
     @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)

@@ -1,11 +1,13 @@
 spring:
   application:
     name: epigram
+
   datasource:
     url: jdbc:h2:tcp://localhost/~/epigram
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     database: h2
     open-in-view: false
@@ -16,7 +18,11 @@ spring:
       hibernate:
         globally_quoted_identifiers: true
         format_sql: false
+
   h2:
     console:
       enabled: true
       path: /h2-console
+
+  jwt:
+    secret: ${JWT_SIGNATURE}
