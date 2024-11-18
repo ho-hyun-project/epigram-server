@@ -71,8 +71,29 @@ public class AuthService implements UserDetailsService {
                 .build();
     }
 
-    public AuthResponseDto authenticate(LoginRequestDto user) {
-        return null;
+    public AuthResponseDto authenticate(LoginRequestDto loginRequestDto) {
+
+        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 email 입니다."));
+
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        JwtToken jwtToken = jwtTokenProvider.generateToken(user.getEmail());
+
+        return AuthResponseDto.builder()
+                .accessToken(jwtToken.getAccessToken())
+                .refreshToken(jwtToken.getRefreshToken())
+                .user(UserDto.builder()
+                        .id(user.getId())
+                        .email(user.getEmail())
+                        .nickname(user.getNickName())
+                        .updatedAt(user.getUpdatedAt())
+                        .createdAt(user.getCreatedAt())
+                        .image(user.getImage())
+                        .build())
+                .build();
     }
 
 }
