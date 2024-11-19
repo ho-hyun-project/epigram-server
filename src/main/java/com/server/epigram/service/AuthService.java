@@ -1,7 +1,6 @@
 package com.server.epigram.service;
 
 import com.server.epigram.auth.JwtTokenProvider;
-import com.server.epigram.auth.UserDetailsImpl;
 import com.server.epigram.db.entity.User;
 import com.server.epigram.db.repository.UserRepository;
 import com.server.epigram.dto.JwtToken;
@@ -12,8 +11,6 @@ import com.server.epigram.dto.response.auth.AuthResponseDto;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,19 +18,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-
-        return new UserDetailsImpl(user);
-    }
 
     public AuthResponseDto register(RegisterRequestDto registerRequestDto) {
         boolean exists = userRepository.existsByEmail(registerRequestDto.getEmail());
