@@ -8,6 +8,7 @@ import com.server.epigram.dto.UserDto;
 import com.server.epigram.dto.request.auth.LoginRequestDto;
 import com.server.epigram.dto.request.auth.RegisterRequestDto;
 import com.server.epigram.dto.response.auth.AuthResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AuthService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -85,4 +86,8 @@ public class AuthService {
                 .build();
     }
 
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없습니다."));
+    }
 }

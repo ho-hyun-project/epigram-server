@@ -142,4 +142,9 @@ public class EpigramService {
 
         return likeEpigramResponseDto;
     }
+
+    public Epigram findEpigramById(Long id) {
+        return epigramRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 에피그램을 찾을 수 없습니다."));
+    }
 }
