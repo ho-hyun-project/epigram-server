@@ -3,7 +3,7 @@ package com.server.epigram.controller;
 import com.server.epigram.dto.request.auth.LoginRequestDto;
 import com.server.epigram.dto.request.auth.RegisterRequestDto;
 import com.server.epigram.dto.response.auth.AuthResponseDto;
-import com.server.epigram.service.AuthService;
+import com.server.epigram.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/signUp")
     public ResponseEntity<AuthResponseDto> signUp(@RequestBody RegisterRequestDto registerRequestDto) {
-        AuthResponseDto authResponseDto = authService.register(registerRequestDto);
+        AuthResponseDto authResponseDto = userService.register(registerRequestDto);
         return ResponseEntity.ok(authResponseDto);
     }
 
     @PostMapping("/signIn")
     public ResponseEntity<AuthResponseDto> signIn(@RequestBody LoginRequestDto loginRequestDto) {
-        AuthResponseDto authResponseDto = authService.authenticate(loginRequestDto);
+        AuthResponseDto authResponseDto = userService.authenticate(loginRequestDto);
         return ResponseEntity.ok(authResponseDto);
     }
 

@@ -8,7 +8,6 @@ import com.server.epigram.dto.UserDto;
 import com.server.epigram.dto.request.auth.LoginRequestDto;
 import com.server.epigram.dto.request.auth.RegisterRequestDto;
 import com.server.epigram.dto.response.auth.AuthResponseDto;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class UserService {
         User user = new User();
         user.setEmail(registerRequestDto.getEmail());
         user.setPassword(registerRequestDto.getPassword());
-        user.setNickName(registerRequestDto.getNickname());
+        user.setNickname(registerRequestDto.getNickname());
 
         userRepository.save(user);
 
@@ -53,7 +52,7 @@ public class UserService {
                 .user(UserDto.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .nickname(user.getNickName())
+                        .nickname(user.getNickname())
                         .updatedAt(user.getUpdatedAt())
                         .createdAt(user.getCreatedAt())
                         .image(user.getImage())
@@ -78,7 +77,7 @@ public class UserService {
                 .user(UserDto.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .nickname(user.getNickName())
+                        .nickname(user.getNickname())
                         .updatedAt(user.getUpdatedAt())
                         .createdAt(user.getCreatedAt())
                         .image(user.getImage())
@@ -86,8 +85,4 @@ public class UserService {
                 .build();
     }
 
-    public User findUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없습니다."));
-    }
 }

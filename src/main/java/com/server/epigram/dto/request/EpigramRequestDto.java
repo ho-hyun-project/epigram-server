@@ -5,18 +5,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EpigramRequestDto {
-
     private String referenceUrl;
     private String referenceTitle;
     private String author;
     private String content;
     private List<TagDto> tags;
-
 }

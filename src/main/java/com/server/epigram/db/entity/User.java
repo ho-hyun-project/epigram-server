@@ -23,33 +23,28 @@ import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(nullable = false)
     private String email;
 
-    @Setter
     @Column(nullable = false)
     private String password;
 
-    @Setter
     @Column(name = "oauth_id")
     private String oauthId;
 
-    @Setter
     @Column(name = "oauth_provider")
     private OauthType oauthProvider;
 
-    @Setter
     @Column(nullable = false)
-    private String nickName;
+    private String nickname;
 
-    @Setter
     private String image;
 
     @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)

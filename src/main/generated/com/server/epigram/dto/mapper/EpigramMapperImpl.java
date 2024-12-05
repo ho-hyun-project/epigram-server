@@ -1,7 +1,10 @@
 package com.server.epigram.dto.mapper;
 
+import com.server.epigram.auth.UserDetailsImpl;
 import com.server.epigram.db.entity.Epigram;
 import com.server.epigram.db.entity.Tag;
+import com.server.epigram.db.entity.User;
+import com.server.epigram.db.repository.UserRepository;
 import com.server.epigram.dto.TagDto;
 import com.server.epigram.dto.request.EpigramRequestDto;
 import com.server.epigram.dto.response.epigram.EpigramResponseDto;
@@ -13,28 +16,34 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-18T16:44:11+0900",
+    date = "2024-11-19T21:59:42+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.13 (Amazon.com Inc.)"
 )
 @Component
 public class EpigramMapperImpl implements EpigramMapper {
 
     @Autowired
-    private TagMapper tagMapper;
+    private UtilMapper utilMapper;
 
     @Override
-    public Epigram toEntity(EpigramRequestDto epigramRequestDto) {
-        if ( epigramRequestDto == null ) {
+    public Epigram toEntity(UserDetailsImpl userDetails, EpigramRequestDto epigramRequestDto, UserRepository userRepository) {
+        if ( userDetails == null && epigramRequestDto == null ) {
             return null;
         }
 
         Epigram epigram = new Epigram();
 
-        epigram.setReferenceUrl( epigramRequestDto.getReferenceUrl() );
-        epigram.setReferenceTitle( epigramRequestDto.getReferenceTitle() );
-        epigram.setAuthor( epigramRequestDto.getAuthor() );
-        epigram.setContent( epigramRequestDto.getContent() );
-        epigram.setTags( tagDtoListToTagList( epigramRequestDto.getTags() ) );
+        if ( userDetails != null ) {
+            epigram.setUser( utilMapper.mapUser( userDetails, userRepository ) );
+            epigram.setId( userDetails.getId() );
+        }
+        if ( epigramRequestDto != null ) {
+            epigram.setReferenceUrl( epigramRequestDto.getReferenceUrl() );
+            epigram.setReferenceTitle( epigramRequestDto.getReferenceTitle() );
+            epigram.setAuthor( epigramRequestDto.getAuthor() );
+            epigram.setContent( epigramRequestDto.getContent() );
+            epigram.setTags( tagDtoListToTagList( epigramRequestDto.getTags(), userRepository ) );
+        }
 
         return epigram;
     }
@@ -47,6 +56,7 @@ public class EpigramMapperImpl implements EpigramMapper {
 
         EpigramResponseDto.EpigramResponseDtoBuilder epigramResponseDto = EpigramResponseDto.builder();
 
+        epigramResponseDto.writerId( epigramUserId( epigram ) );
         epigramResponseDto.id( epigram.getId() );
         epigramResponseDto.referenceUrl( epigram.getReferenceUrl() );
         epigramResponseDto.referenceTitle( epigram.getReferenceTitle() );
@@ -71,17 +81,56 @@ public class EpigramMapperImpl implements EpigramMapper {
         return list;
     }
 
-    protected List<Tag> tagDtoListToTagList(List<TagDto> list) {
+    protected Tag tagDtoToTag(TagDto tagDto, UserRepository userRepository) {
+        if ( tagDto == null ) {
+            return null;
+        }
+
+        Tag tag = new Tag();
+
+        tag.setName( tagDto.getName() );
+
+        return tag;
+    }
+
+    protected List<Tag> tagDtoListToTagList(List<TagDto> list, UserRepository userRepository) {
         if ( list == null ) {
             return null;
         }
 
         List<Tag> list1 = new ArrayList<Tag>( list.size() );
         for ( TagDto tagDto : list ) {
-            list1.add( tagMapper.toEntity( tagDto ) );
+            list1.add( tagDtoToTag( tagDto, userRepository ) );
         }
 
         return list1;
+    }
+
+    private Long epigramUserId(Epigram epigram) {
+        if ( epigram == null ) {
+            return null;
+        }
+        User user = epigram.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        Long id = user.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    protected TagDto tagToTagDto(Tag tag) {
+        if ( tag == null ) {
+            return null;
+        }
+
+        TagDto tagDto = new TagDto();
+
+        tagDto.setName( tag.getName() );
+
+        return tagDto;
     }
 
     protected List<TagDto> tagListToTagDtoList(List<Tag> list) {
@@ -91,7 +140,7 @@ public class EpigramMapperImpl implements EpigramMapper {
 
         List<TagDto> list1 = new ArrayList<TagDto>( list.size() );
         for ( Tag tag : list ) {
-            list1.add( tagMapper.fromEntity( tag ) );
+            list1.add( tagToTagDto( tag ) );
         }
 
         return list1;
