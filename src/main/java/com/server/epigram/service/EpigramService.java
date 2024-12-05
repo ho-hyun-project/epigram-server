@@ -1,5 +1,6 @@
 package com.server.epigram.service;
 
+import com.server.epigram.auth.UserDetailsImpl;
 import com.server.epigram.db.entity.Epigram;
 import com.server.epigram.db.entity.EpigramLike;
 import com.server.epigram.db.entity.Tag;
@@ -34,8 +35,8 @@ public class EpigramService {
     private final TagMapper tagMapper;
 
     @Transactional
-    public EpigramResponseDto createEpigram(EpigramRequestDto epigramRequestDto) {
-        Epigram epigram = epigramMapper.toEntity(epigramRequestDto);
+    public EpigramResponseDto createEpigram(UserDetailsImpl userDetails, EpigramRequestDto epigramRequestDto) {
+        Epigram epigram = epigramMapper.toEntity(userDetails, epigramRequestDto, userRepository);
 
         List<Tag> tags = epigramRequestDto.getTags().stream()
                 .map(tagDto -> {
@@ -142,4 +143,5 @@ public class EpigramService {
 
         return likeEpigramResponseDto;
     }
+
 }

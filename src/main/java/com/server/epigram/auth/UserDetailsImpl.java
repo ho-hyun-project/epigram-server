@@ -7,9 +7,9 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class UserDetailsImpl implements UserDetails {
 
-    @Getter
     private Long id;
     private String email;
     private String password;
@@ -20,7 +20,7 @@ public class UserDetailsImpl implements UserDetails {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.nickname = user.getNickName();
+        this.nickname = user.getNickname();
         this.image = user.getImage();
     }
 
@@ -30,13 +30,8 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
     public String getUsername() {
-        return this.email;
+        return "";
     }
 
 }

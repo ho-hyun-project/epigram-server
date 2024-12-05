@@ -21,6 +21,7 @@ import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 public class Epigram extends BaseEntity {
 
     @Id
@@ -28,21 +29,14 @@ public class Epigram extends BaseEntity {
     private Long id;
 
     @Column(name = "reference_url")
-    @Setter
     private String referenceUrl;
 
     @Column(name = "reference_title")
-    @Setter
     private String referenceTitle;
 
-    @Setter
     private String author;
 
-    @Setter
     private String content;
-
-    @Column(name = "comment_count")
-    private Long commentCount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -57,7 +51,6 @@ public class Epigram extends BaseEntity {
             joinColumns = @JoinColumn(name = "epigram_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @Setter
     private List<Tag> tags = new ArrayList<>();
 
 }

@@ -54,18 +54,22 @@ public class EpigramController {
             ))
     @PostMapping
     public ResponseEntity<EpigramResponseDto> postEpigram(
-            @Parameter(description = "생성할 에피그램 데이터") @RequestBody EpigramRequestDto epigramRequestDto) {
+            @Parameter(description = "생성할 에피그램 데이터") @RequestBody EpigramRequestDto epigramRequestDto,
+            @AuthenticationPrincipal
+            UserDetailsImpl userDetails) {
 
         if (epigramRequestDto == null || epigramRequestDto.getContent().isEmpty()) {
             throw new InvalidDataException("잘못된 형식입니다.");
         }
 
-        EpigramResponseDto epigramResponseDto = epigramService.createEpigram(epigramRequestDto);
+        EpigramResponseDto epigramResponseDto = epigramService.createEpigram(userDetails, epigramRequestDto);
         return ResponseEntity.ok(epigramResponseDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<EpigramResponseDto>> getAllEpigram() {
+    public ResponseEntity<List<EpigramResponseDto>> getAllEpigram(
+            @AuthenticationPrincipal
+            UserDetailsImpl userDetails) {
         List<EpigramResponseDto> epigramResponseDtos = epigramService.getAllEpigram();
         return ResponseEntity.ok(epigramResponseDtos);
     }

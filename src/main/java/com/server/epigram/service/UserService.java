@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AuthService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,7 +40,7 @@ public class AuthService {
         User user = new User();
         user.setEmail(registerRequestDto.getEmail());
         user.setPassword(registerRequestDto.getPassword());
-        user.setNickName(registerRequestDto.getNickname());
+        user.setNickname(registerRequestDto.getNickname());
 
         userRepository.save(user);
 
@@ -52,7 +52,7 @@ public class AuthService {
                 .user(UserDto.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .nickname(user.getNickName())
+                        .nickname(user.getNickname())
                         .updatedAt(user.getUpdatedAt())
                         .createdAt(user.getCreatedAt())
                         .image(user.getImage())
@@ -77,7 +77,7 @@ public class AuthService {
                 .user(UserDto.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .nickname(user.getNickName())
+                        .nickname(user.getNickname())
                         .updatedAt(user.getUpdatedAt())
                         .createdAt(user.getCreatedAt())
                         .image(user.getImage())
